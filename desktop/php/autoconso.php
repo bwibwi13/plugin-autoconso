@@ -128,30 +128,30 @@ $eqLogics = eqLogic::byType($plugin->getId());
 
 							<legend><i class="fas fa-cogs"></i> {{Paramètres spécifiques}}</legend>
 							<div class="form-group">
-								<label class="col-sm-4 control-label">{{Nom du paramètre n°1}}
-									<sup><i class="fas fa-question-circle tooltips" title="{{Renseignez le paramètre n°1 de l'équipement}}"></i></sup>
+								<label class="col-sm-4 control-label">{{Injection nette}}
+									<sup><i class="fas fa-question-circle tooltips" title="{{Equipement qui renseigne le bilan d'injection nette instantanée de l'habitation}}"></i></sup>
 								</label>
 								<div class="col-sm-6">
-									<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="param1" placeholder="{{Paramètre n°1}}">
+									<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="injection">
 								</div>
 							</div>
 							<div class="form-group">
-								<label class="col-sm-4 control-label"> {{Mot de passe}}
-									<sup><i class="fas fa-question-circle tooltips" title="{{Renseignez le mot de passe}}"></i></sup>
+								<label class="col-sm-4 control-label">{{Production solaire}}
+									<sup><i class="fas fa-question-circle tooltips" title="{{Equipement qui renseigne la puissance de production photovoltaïque instantanée}}"></i></sup>
 								</label>
 								<div class="col-sm-6">
-									<input type="text" class="eqLogicAttr form-control inputPassword" data-l1key="configuration" data-l2key="password">
+									<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="production" placeholder="{{Optionnel}}">
 								</div>
 							</div>
 							<!-- Exemple de champ de saisie du cron d'auto-actualisation avec assistant -->
 							<!-- La fonction cron de la classe du plugin doit contenir le code prévu pour que ce champ soit fonctionnel -->
 							<div class="form-group">
-								<label class="col-sm-4 control-label">{{Auto-actualisation}}
-									<sup><i class="fas fa-question-circle tooltips" title="{{Fréquence de rafraîchissement des commandes infos de l'équipement}}"></i></sup>
+								<label class="col-sm-4 control-label">{{Fonctionnement régulier}}
+									<sup><i class="fas fa-question-circle tooltips" title="{{Cron de sécurité pour vérification régulière de la situation (si les triggers ne sont pas efficaces)}}"></i></sup>
 								</label>
 								<div class="col-sm-6">
 									<div class="input-group">
-										<input type="text" class="eqLogicAttr form-control roundedLeft" data-l1key="configuration" data-l2key="autorefresh" placeholder="{{Cliquer sur ? pour afficher l'assistant cron}}">
+										<input type="text" class="eqLogicAttr form-control roundedLeft" data-l1key="configuration" data-l2key="autorefresh" placeholder="{{*/10 * * * *}}">
 										<span class="input-group-btn">
 											<a class="btn btn-default cursor jeeHelper roundedRight" data-helper="cron" title="Assistant cron">
 												<i class="fas fa-question-circle"></i>
@@ -179,7 +179,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
 
 			<!-- Onglet des commandes de l'équipement -->
 			<div role="tabpanel" class="tab-pane" id="commandtab">
-				<a class="btn btn-default btn-sm pull-right cmdAction" data-action="add" style="margin-top:5px;"><i class="fas fa-plus-circle"></i> {{Ajouter une commande}}</a>
+				<a class="btn btn-default btn-sm pull-right cmdAction" data-action="add" style="margin-top:5px;"><i class="fas fa-plus-circle"></i> {{Ajouter un équipement}}</a>
 				<br><br>
 				<div class="table-responsive">
 					<table id="table_cmd" class="table table-bordered table-condensed">
