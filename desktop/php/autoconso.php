@@ -148,7 +148,14 @@ $eqLogics = eqLogic::byType($plugin->getId());
 									<sup><i class="fas fa-question-circle tooltips" title="{{Equipement qui renseigne la puissance de production photovoltaïque instantanée}}"></i></sup>
 								</label>
 								<div class="col-sm-6">
-									<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="production" placeholder="{{Optionnel}}">
+									<div class="input-group">
+										<input type="text" class="eqLogicAttr form-control roundedLeft" data-l1key="configuration" data-l2key="production" placeholder="{{Optionnel}}">
+										<span class="input-group-btn">
+											<a class="btn btn-default roundedRight listEquipement" data-input="production">
+												<i class="fas fa-list-alt"></i>
+											</a>
+										</span>
+									</div>
 								</div>
 							</div>
 							<div class="form-group">

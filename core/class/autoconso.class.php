@@ -66,9 +66,8 @@ class autoconso extends eqLogic {
 			array('autoconso 3',  300,      6866,    6867,     6868)
 		);
 	
-		$currentPower = 350;
-		$currentPower = intval(cmd::byId(str_replace('#', '', $this->getConfiguration('injection')))->execCmd());
-		$powerPV = 1000; //intval(cmd::byId(userFunction::ID_Onduleur_puissance)->execCmd());
+		$currentPower = intval(cmd::byId(str_replace('#', '', $this->getConfiguration('injection') ))->execCmd());
+		$powerPV      = intval(cmd::byId(str_replace('#', '', $this->getConfiguration('production')))->execCmd());
 
 		// Estimate consumption if everything is turned off
 		$estimatedPower = $currentPower;
@@ -160,14 +159,16 @@ log::add('autoconso', 'debug', $body);
   // Fonction exécutée automatiquement avant la sauvegarde (création ou mise à jour) de l'équipement
   public function preSave() {
 	  // Translate human name of equipments to ID
-	  $this->setConfiguration('injection', cmd::humanReadableToCmd($this->getConfiguration('injection')));
+	  $this->setConfiguration('injection' , cmd::humanReadableToCmd($this->getConfiguration('injection') ));
+	  $this->setConfiguration('production', cmd::humanReadableToCmd($this->getConfiguration('production')));
 	  
   }
 
   // Fonction exécutée automatiquement après la sauvegarde (création ou mise à jour) de l'équipement
   public function postSave() {
 	  // Translate ID of equipments to human name
-	  $this->setConfiguration('injection', cmd::cmdToHumanReadable($this->getConfiguration('injection')));
+	  $this->setConfiguration('injection' , cmd::cmdToHumanReadable($this->getConfiguration('injection') ));
+	  $this->setConfiguration('production', cmd::cmdToHumanReadable($this->getConfiguration('production')));
 	  
         //$cmd = $this->getCmd(null, 'refresh');
         //if (!is_object($cmd)) {
