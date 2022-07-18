@@ -14,13 +14,19 @@
 * along with Jeedom. If not, see <http://www.gnu.org/licenses/>.
 */
 
+// Assign popup to select equipment
+$(".form-group").delegate(".listEquipement", 'click', function () {
+  var topic = $(this).data('input')
+  jeedom.cmd.getSelectModal({cmd: {type: 'info'}}, function (result) {
+	$('[data-l1key=configuration][data-l2key=' + topic + ']').val(result.human)
+  })
+})
+
+
 /* Fonction permettant l'affichage des commandes dans l'équipement */
 function addCmdToTable(_cmd) {
   if (!isset(_cmd)) {
     var _cmd = {configuration: {}}
-  }
-  if (!isset(_cmd.configuration)) {
-    _cmd.configuration = {}
   }
   var tr = '<tr class="cmd" data-cmd_id="' + init(_cmd.id) + '">'
   tr += '<td class="hidden-xs">'
@@ -87,9 +93,6 @@ $("#table_equ").sortable({
 function addEquToTable(_equ) {
   if (!isset(_equ)) {
     var _equ = {configuration: {}}
-  }
-  if (!isset(_equ.configuration)) {
-    _equ.configuration = {}
   }
   var tr = '<tr class="cmd" data-cmd_id="' + init(_equ.id) + '">'
   tr += '<td class="hidden-xs">'

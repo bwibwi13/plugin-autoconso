@@ -66,7 +66,8 @@ class autoconso extends eqLogic {
 			array('autoconso 3',  300,      6866,    6867,     6868)
 		);
 	
-		$currentPower = 350; //userFunction::elecInjection();
+		$currentPower = 350;
+		$currentPower = intval(cmd::byId(str_replace('#', '', $this->getConfiguration('injection')))->execCmd());
 		$powerPV = 1000; //intval(cmd::byId(userFunction::ID_Onduleur_puissance)->execCmd());
 
 		// Estimate consumption if everything is turned off
@@ -158,10 +159,28 @@ log::add('autoconso', 'debug', $body);
 
   // Fonction exécutée automatiquement avant la sauvegarde (création ou mise à jour) de l'équipement
   public function preSave() {
+	  // Translate human name of equipments to ID
+	  $this->setConfiguration('injection', cmd::humanReadableToCmd($this->getConfiguration('injection')));
+	  
   }
 
   // Fonction exécutée automatiquement après la sauvegarde (création ou mise à jour) de l'équipement
   public function postSave() {
+	  // Translate ID of equipments to human name
+	  $this->setConfiguration('injection', cmd::cmdToHumanReadable($this->getConfiguration('injection')));
+	  
+        //$cmd = $this->getCmd(null, 'refresh');
+        //if (!is_object($cmd)) {
+        //    $cmd = new googlecastCmd();
+        //    $cmd->setLogicalId('refresh');
+        //    $cmd->setName(__('Rafraîchir', __FILE__));
+        //    $cmd->setIsVisible(1);
+        //    $cmd->setConfiguration('googlecast_cmd', true);
+        //}
+        //$cmd->setType('action');
+        //$cmd->setSubType('other');
+        //$cmd->setEqLogic_id($this->getId());
+        //$cmd->save();
   }
 
   // Fonction exécutée automatiquement avant la suppression de l'équipement

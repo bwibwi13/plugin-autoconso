@@ -133,7 +133,14 @@ $eqLogics = eqLogic::byType($plugin->getId());
 									<sup><i class="fas fa-question-circle tooltips" title="{{Equipement qui renseigne le bilan d'injection nette instantanée de l'habitation}}"></i></sup>
 								</label>
 								<div class="col-sm-6">
-									<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="injection">
+									<div class="input-group">
+										<input type="text" class="eqLogicAttr form-control roundedLeft" data-l1key="configuration" data-l2key="injection">
+										<span class="input-group-btn">
+											<a class="btn btn-default roundedRight listEquipement" data-input="injection">
+												<i class="fas fa-list-alt"></i>
+											</a>
+										</span>
+									</div>
 								</div>
 							</div>
 							<div class="form-group">
