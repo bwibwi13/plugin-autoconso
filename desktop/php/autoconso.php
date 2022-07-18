@@ -74,6 +74,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
 			<li role="presentation"><a href="#" class="eqLogicAction" aria-controls="home" role="tab" data-toggle="tab" data-action="returnToThumbnailDisplay"><i class="fas fa-arrow-circle-left"></i></a></li>
 			<li role="presentation" class="active"><a href="#eqlogictab" aria-controls="home" role="tab" data-toggle="tab"><i class="fas fa-tachometer-alt"></i> {{Equipement}}</a></li>
 			<li role="presentation"><a href="#commandtab" aria-controls="home" role="tab" data-toggle="tab"><i class="fas fa-list"></i> {{Commandes}}</a></li>
+			<li role="presentation"><a href="#equtab" aria-controls="home" role="tab" data-toggle="tab"><i class="fas fa-list"></i> {{Equipments Table}}</a></li>
 		</ul>
 		<div class="tab-content">
 			<!-- Onglet de configuration de l'équipement -->
@@ -143,8 +144,14 @@ $eqLogics = eqLogic::byType($plugin->getId());
 									<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="production" placeholder="{{Optionnel}}">
 								</div>
 							</div>
-							<!-- Exemple de champ de saisie du cron d'auto-actualisation avec assistant -->
-							<!-- La fonction cron de la classe du plugin doit contenir le code prévu pour que ce champ soit fonctionnel -->
+							<div class="form-group">
+								<label class="col-sm-4 control-label">{{Marge de sécurité}}
+									<sup><i class="fas fa-question-circle tooltips" title="{{Marge de sécurité à prendre sur l'injection électique (Watt)}}"></i></sup>
+								</label>
+								<div class="col-sm-6">
+									<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="security" placeholder="{{100}}">
+								</div>
+							</div>
 							<div class="form-group">
 								<label class="col-sm-4 control-label">{{Fonctionnement régulier}}
 									<sup><i class="fas fa-question-circle tooltips" title="{{Cron de sécurité pour vérification régulière de la situation (si les triggers ne sont pas efficaces)}}"></i></sup>
@@ -179,8 +186,8 @@ $eqLogics = eqLogic::byType($plugin->getId());
 
 			<!-- Onglet des commandes de l'équipement -->
 			<div role="tabpanel" class="tab-pane" id="commandtab">
-				<a class="btn btn-default btn-sm pull-right cmdAction" data-action="add" style="margin-top:5px;"><i class="fas fa-plus-circle"></i> {{Ajouter un équipement}}</a>
-				<br><br>
+				<!-- <a class="btn btn-default btn-sm pull-right cmdAction" data-action="add" style="margin-top:5px;"><i class="fas fa-plus-circle"></i> {{Ajouter un équipement}}</a>
+				<br><br> -->
 				<div class="table-responsive">
 					<table id="table_cmd" class="table table-bordered table-condensed">
 						<thead>
@@ -198,6 +205,26 @@ $eqLogics = eqLogic::byType($plugin->getId());
 				</div>
 			</div><!-- /.tabpanel #commandtab-->
 
+			<!-- Onglet des équipement à gérer -->
+			<div role="tabpanel" class="tab-pane" id="equtab">
+				<a class="btn btn-default btn-sm pull-right cmdAction" data-action="add" style="margin-top:5px;"><i class="fas fa-plus-circle"></i> {{Ajouter un équipement}}</a>
+				<br><br>
+				<div class="table-responsive">
+					<table id="table_equ" class="table table-bordered table-condensed">
+						<thead>
+							<tr>
+								<th style="min-width:200px;width:350px;">{{Nom}}</th>
+								<th style="min-width:80px;width:150px;">{{Consommation}}</th>
+								<th style="min-width:200px;width:350px;">{{Statut}}</th>
+								<th style="min-width:200px;width:350px;">{{ON Cmd}}</th>
+								<th style="min-width:200px;width:350px;">{{OFF Cmd}}</th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
+				</div>
+			</div><!-- /.tabpanel #equtab-->
 		</div><!-- /.tab-content -->
 	</div><!-- /.eqLogic -->
 </div><!-- /.row row-overflow -->

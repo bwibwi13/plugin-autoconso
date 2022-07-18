@@ -43,7 +43,7 @@ class autoconso extends eqLogic {
 				try {
 					$c = new Cron\CronExpression(checkAndFixCron($autorefresh), new Cron\FieldFactory);
 					if ($c->isDue()) {
-						$eqLogic->refresh();
+						$eqLogic->optimizeAutoconso();
 					}
 				} catch (Exception $exc) {
 					log::add('autoconso', 'error', __('Expression cron non valide pour', __FILE__) . ' ' . $eqLogic->getHumanName() . ' : ' . $autorefresh);
@@ -55,21 +55,89 @@ class autoconso extends eqLogic {
   /*     * *********************Méthodes d'instance************************* */
 
 	// Called by the cron()
-	public function refresh() {
-log::add('autoconso', 'debug', 'refresh() for '.$this->getHumanName());
-		try {
-			//foreach ($this->getCmd('info') as $cmd) {
-			//	if ($cmd->getConfiguration('calcul') == '' || $cmd->getConfiguration('virtualAction', 0) != '0') {
-			//		continue;
-			//	}
-			//	$value = $cmd->execute();
-			//	if ($cmd->execCmd() != $cmd->formatValue($value)) {
-			//		$cmd->event($value);
-			//	}
-			//}
-		} catch (Exception $exc) {
-			log::add('autoconso', 'error', __('Erreur pour', __FILE__) . ' ' . $eqLogic->getHumanName() . ' : ' . $exc->getMessage());
+	public function optimizeAutoconso() {
+		$body .= $this->getHumanName().' ';
+	
+		// Build table of equipment to control (TODO retrieve from configuration)
+		$orderedList = array(
+			//    0:Name    1:Consumption 2:Status 3:Turn ON 4:Turn OFF
+			array('autoconso 1', 2800,      6856,    6857,     6858),
+			array('autoconso 2',  700,      6861,    6862,     6863),
+			array('autoconso 3',  300,      6866,    6867,     6868)
+		);
+	
+		$currentPower = 350; //userFunction::elecInjection();
+		$powerPV = 1000; //intval(cmd::byId(userFunction::ID_Onduleur_puissance)->execCmd());
+
+		// Estimate consumption if everything is turned off
+		$estimatedPower = $currentPower;
+		foreach ($orderedList as $electricItem) {
+			$turnedON = intval(cmd::byId($electricItem[2])->execCmd());
+			if ($turnedON) {
+				$estimatedPower += $electricItem[1];
+			}
 		}
+		$body .= 'Injecting '.$currentPower.'W out of '.$estimatedPower.'W ('.$powerPV.'W of PV). ';
+
+		//$heureCreuse = boolval(cmd::byId(userFunction::ID_Compt_elec_Nuit_nJour)->execCmd());
+		//
+		//// Minimum injection before we start turning ON equipment
+		//if ($heureCreuse) {
+			$securityMargin = $this->getConfiguration('security');
+			if (! is_numeric($securityMargin)) {
+				$securityMargin = 0;
+			}
+		//} else {
+		//	$securityMargin = 400;
+		//}
+		$body .= 'Security margin of '.$securityMargin.'W. ';
+
+
+
+	
+		// Optimize auto-consumption
+		foreach ($orderedList as $electricItem) {
+			$turnedON = intval(cmd::byId($electricItem[2])->execCmd());
+	
+			if (($estimatedPower-$electricItem[1]>$securityMargin) && ($electricItem[1]<$powerPV)) {
+				// It should be ON
+				if (!$turnedON) {
+					// Turn ON
+					cmd::byId($electricItem[3])->execCmd();
+					//$body .= cmd::byId($electricItem[2])->getName();
+					$body .= $electricItem[0];
+					$body .= ' turned ON ('.$estimatedPower.'-'.$electricItem[1].'). ';
+					
+					$currentPower -= $electricItem[1];
+				} else {
+					//$body .= cmd::byId($electricItem[2])->getName();
+					$body .= $electricItem[0];
+					$body .= ' already ON. ';
+				}
+				// Take the expected consumption in consideration for the remaining loops
+				$estimatedPower -= $electricItem[1];
+			} else {
+				// It should be OFF
+				if ($turnedON) {
+					// Turn OFF
+					cmd::byId($electricItem[4])->execCmd();
+					//$body .= cmd::byId($electricItem[2])->getName();
+					$body .= $electricItem[0];
+					$body .= ' turned OFF ('.$currentPower.'+'.$electricItem[1].'). ';
+	
+					// Take the expected consumption in consideration for the remaining loops
+					$currentPower += $electricItem[1]; //(actually done above, when estimating actual injection
+					
+				} else {
+					//$body .= cmd::byId($electricItem[2])->getName();
+					$body .= $electricItem[0];
+					$body .= ' already OFF. ';
+				}
+			}
+		}
+		
+		$body .= 'Should end up with an injection of '.$currentPower.'W.';
+log::add('autoconso', 'debug', $body);
 	}
 
   // Fonction exécutée automatiquement avant la création de l'équipement
