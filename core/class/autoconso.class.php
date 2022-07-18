@@ -35,42 +35,42 @@ class autoconso extends eqLogic {
 
   /*     * ***********************Methode static*************************** */
 
-  /*
-  * Fonction exécutée automatiquement toutes les minutes par Jeedom
-  public static function cron() {}
-  */
-
-  /*
-  * Fonction exécutée automatiquement toutes les 5 minutes par Jeedom
-  public static function cron5() {}
-  */
-
-  /*
-  * Fonction exécutée automatiquement toutes les 10 minutes par Jeedom
-  public static function cron10() {}
-  */
-
-  /*
-  * Fonction exécutée automatiquement toutes les 15 minutes par Jeedom
-  public static function cron15() {}
-  */
-
-  /*
-  * Fonction exécutée automatiquement toutes les 30 minutes par Jeedom
-  public static function cron30() {}
-  */
-
-  /*
-  * Fonction exécutée automatiquement toutes les heures par Jeedom
-  public static function cronHourly() {}
-  */
-
-  /*
-  * Fonction exécutée automatiquement tous les jours par Jeedom
-  public static function cronDaily() {}
-  */
+  public static function cron() {
+		foreach (eqLogic::byType('autoconso', true) as $eqLogic) {
+			$autorefresh = $eqLogic->getConfiguration('autorefresh');
+//log::add('autoconso', 'debug', 'cron for '.$eqLogic->getHumanName() . ' is "' . $autorefresh.'"');
+			if ($autorefresh != '') {
+				try {
+					$c = new Cron\CronExpression(checkAndFixCron($autorefresh), new Cron\FieldFactory);
+					if ($c->isDue()) {
+						$eqLogic->refresh();
+					}
+				} catch (Exception $exc) {
+					log::add('autoconso', 'error', __('Expression cron non valide pour', __FILE__) . ' ' . $eqLogic->getHumanName() . ' : ' . $autorefresh);
+				}
+			}
+		}
+  }
 
   /*     * *********************Méthodes d'instance************************* */
+
+	// Called by the cron()
+	public function refresh() {
+log::add('autoconso', 'debug', 'refresh() for '.$this->getHumanName());
+		try {
+			//foreach ($this->getCmd('info') as $cmd) {
+			//	if ($cmd->getConfiguration('calcul') == '' || $cmd->getConfiguration('virtualAction', 0) != '0') {
+			//		continue;
+			//	}
+			//	$value = $cmd->execute();
+			//	if ($cmd->execCmd() != $cmd->formatValue($value)) {
+			//		$cmd->event($value);
+			//	}
+			//}
+		} catch (Exception $exc) {
+			log::add('autoconso', 'error', __('Erreur pour', __FILE__) . ' ' . $eqLogic->getHumanName() . ' : ' . $exc->getMessage());
+		}
+	}
 
   // Fonction exécutée automatiquement avant la création de l'équipement
   public function preInsert() {
