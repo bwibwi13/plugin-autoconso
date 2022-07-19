@@ -54,9 +54,24 @@ class autoconso extends eqLogic {
 
   /*     * *********************Méthodes d'instance************************* */
 
+	// Called by the listener
+	public static function optimize($_option) {
+//log::add('autoconso', 'debug', 'optimize() called from listener => ' . json_encode($_option));
+		$autoconso = autoconso::byId($_option['autoconso_id']);
+		if (is_object($autoconso) && $autoconso->getIsEnable() == 1) {
+			$autoconso->optimizeAutoconso();
+		} else {
+			log::add('autoconso', 'error', 'optimize() called with erroneous id => ' . json_encode($_option));
+		}
+	}
+
 	// Called by the cron()
 	public function optimizeAutoconso() {
-		$body .= $this->getHumanName().' ';
+if (!is_object($this)) {
+	log::add('autoconso', 'debug', 'optimizeAutoconso problem: ('.print_r($_option,true).')');
+}
+
+		$body = $this->getHumanName().' ';
 	
 		// Build table of equipment to control (TODO retrieve from configuration)
 		$orderedList = array(
@@ -66,8 +81,8 @@ class autoconso extends eqLogic {
 			array('autoconso 3',  300,      6866,    6867,     6868)
 		);
 	
-		$currentPower = intval(cmd::byId(str_replace('#', '', $this->getConfiguration('injection') ))->execCmd());
-		$powerPV      = intval(cmd::byId(str_replace('#', '', $this->getConfiguration('production')))->execCmd());
+		$currentPower = jeedom::evaluateExpression($this->getConfiguration('injection'));
+		$powerPV      = jeedom::evaluateExpression($this->getConfiguration('production'));
 
 		// Estimate consumption if everything is turned off
 		$estimatedPower = $currentPower;
@@ -137,7 +152,7 @@ class autoconso extends eqLogic {
 		}
 		
 		$body .= 'Should end up with an injection of '.$currentPower.'W.';
-log::add('autoconso', 'debug', $body);
+		log::add('autoconso', 'debug', $body);
 	}
 
   // Fonction exécutée automatiquement avant la création de l'équipement
@@ -158,6 +173,10 @@ log::add('autoconso', 'debug', $body);
 
   // Fonction exécutée automatiquement avant la sauvegarde (création ou mise à jour) de l'équipement
   public function preSave() {
+		if ($this->getConfiguration('injection') == '') {
+			throw new Exception(__('La mesure d\'injection nette est obligatoire pour gérer l\'autoconsomation', __FILE__));
+		}
+
 	  // Translate human name of equipments to ID
 	  $this->setConfiguration('injection' , cmd::humanReadableToCmd($this->getConfiguration('injection') ));
 	  $this->setConfiguration('production', cmd::humanReadableToCmd($this->getConfiguration('production')));
@@ -166,10 +185,34 @@ log::add('autoconso', 'debug', $body);
 
   // Fonction exécutée automatiquement après la sauvegarde (création ou mise à jour) de l'équipement
   public function postSave() {
-	  // Translate ID of equipments to human name
-	  $this->setConfiguration('injection' , cmd::cmdToHumanReadable($this->getConfiguration('injection') ));
-	  $this->setConfiguration('production', cmd::cmdToHumanReadable($this->getConfiguration('production')));
-	  
+	// Define listener to be notified of changes
+	$listener = listener::byClassAndFunction('autoconso', 'optimize', array('autoconso_id' => intval($this->getId())));
+	if ($this->getIsEnable()) {
+		if (!is_object($listener)) {
+			log::add('autoconso', 'debug', 'Creating new listener');
+			$listener = new listener();
+			$listener->setClass('autoconso');
+			$listener->setFunction('optimize');
+			$listener->setOption(array('autoconso_id' => intval($this->getId())));
+		}
+		$listener->emptyEvent();
+		$listener->addEvent($this->getConfiguration('injection'));
+		if (! $this->getConfiguration('production') == '') {
+			$listener->addEvent($this->getConfiguration('production'));
+		}
+		$listener->save();
+	} else {
+		if (is_object($listener)) {
+			log::add('autoconso', 'debug', 'Delete existing listener as item is disabled');
+			$listener->remove();
+		}
+
+	}
+
+//$listener = listener::byClass('autoconso');
+//log::add('autoconso', 'debug', print_r($listener, true));
+				
+				
         //$cmd = $this->getCmd(null, 'refresh');
         //if (!is_object($cmd)) {
         //    $cmd = new googlecastCmd();
@@ -182,10 +225,19 @@ log::add('autoconso', 'debug', $body);
         //$cmd->setSubType('other');
         //$cmd->setEqLogic_id($this->getId());
         //$cmd->save();
+
+	// Translate ID of equipments to human name
+	$this->setConfiguration('injection' , cmd::cmdToHumanReadable($this->getConfiguration('injection') ));
+	$this->setConfiguration('production', cmd::cmdToHumanReadable($this->getConfiguration('production')));
   }
 
   // Fonction exécutée automatiquement avant la suppression de l'équipement
   public function preRemove() {
+	// Clean listener
+	$listener = listener::byClassAndFunction('autoconso', 'optimize', array('autoconso_id' => intval($this->getId())));
+	if (is_object($listener)) {
+		$listener->remove();
+	}
   }
 
   // Fonction exécutée automatiquement après la suppression de l'équipement
