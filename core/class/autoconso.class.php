@@ -92,24 +92,22 @@ if (!is_object($this)) {
 				$estimatedPower += $electricItem[1];
 			}
 		}
-		$body .= 'Injecting '.$currentPower.'W out of '.$estimatedPower.'W ('.$powerPV.'W of PV). ';
+		$body .= 'Injecting '.$currentPower.'W out of '.$estimatedPower.'W';
+		
+		if ($powerPV) {
+			$body .= ' ('.$powerPV.'W of PV)';
+		}
+		$body .= '. ';
 
-		//$heureCreuse = boolval(cmd::byId(userFunction::ID_Compt_elec_Nuit_nJour)->execCmd());
-		//
-		//// Minimum injection before we start turning ON equipment
-		//if ($heureCreuse) {
+		if ($this->getConfiguration('security') == '') {
+			$securityMargin = 0;
+		} else if (is_numeric($this->getConfiguration('security'))) {
 			$securityMargin = $this->getConfiguration('security');
-			if (! is_numeric($securityMargin)) {
-				$securityMargin = 0;
-			}
-		//} else {
-		//	$securityMargin = 400;
-		//}
+		} else {
+			$securityMargin = jeedom::evaluateExpression($this->getConfiguration('security'));
+		}
 		$body .= 'Security margin of '.$securityMargin.'W. ';
 
-
-
-	
 		// Optimize auto-consumption
 		foreach ($orderedList as $electricItem) {
 			$turnedON = intval(cmd::byId($electricItem[2])->execCmd());
@@ -184,10 +182,12 @@ if (!is_object($this)) {
 
   // Fonction exécutée automatiquement avant la sauvegarde (création ou mise à jour) de l'équipement
   public function preSave() {
-	  // Translate human name of equipments to ID
-	  $this->setConfiguration('injection' , cmd::humanReadableToCmd($this->getConfiguration('injection') ));
-	  $this->setConfiguration('production', cmd::humanReadableToCmd($this->getConfiguration('production')));
-	  
+	// Translate human name of equipments to ID
+	$this->setConfiguration('injection' , cmd::humanReadableToCmd($this->getConfiguration('injection') ));
+	$this->setConfiguration('production', cmd::humanReadableToCmd($this->getConfiguration('production')));
+	if ($this->getConfiguration('security') != '' && !is_numeric($this->getConfiguration('security'))) {
+		$this->setConfiguration('security', cmd::humanReadableToCmd($this->getConfiguration('security')));
+	}
   }
 
   // Fonction exécutée automatiquement après la sauvegarde (création ou mise à jour) de l'équipement
@@ -228,6 +228,9 @@ if (!is_object($this)) {
 	// Translate ID of equipments to human name
 	$this->setConfiguration('injection' , cmd::cmdToHumanReadable($this->getConfiguration('injection') ));
 	$this->setConfiguration('production', cmd::cmdToHumanReadable($this->getConfiguration('production')));
+	if ($this->getConfiguration('security') != '' && !is_numeric($this->getConfiguration('security'))) {
+		$this->setConfiguration('security', cmd::cmdToHumanReadable($this->getConfiguration('security')));
+	}
   }
 
   // Fonction exécutée automatiquement avant la suppression de l'équipement
@@ -294,14 +297,25 @@ class autoconsoCmd extends cmd {
 
   // Empêche la suppression des commandes même si elles ne sont pas dans la nouvelle configuration de l'équipement envoyé en JS
   public function dontRemoveCmd() {
-	if (true) { // Protect the actual command but not the equipments from the optimisation table
+	//if ($this->getType() == 'action') { // Protect the actual command but not the equipments from the optimisation table
+log::add('autoconso', 'debug', 'dontRemoveCmd() for cmd '.$this->getName().' with type: '.$this->getType().' with logicalID: '.$this->getLogicalId());
 		return true;
-	}
+	//}
   }
 
   // Exécution d'une commande
   public function execute($_options = array()) {
-	  log::add('autoconso', 'debug', 'execute() for cmd '.$this->getName().' with options: '.json_encode($_option));
+	//log::add('autoconso', 'debug', 'execute() for cmd '.$this->getName());
+	  
+	$eqLogic = $this->getEqLogic();
+	if ($this->getLogicalId() == 'optimize') {
+		$eqLogic->optimize();
+		return;
+	}
+	
+	if ($this->getType() == 'info') {
+		log::add('autoconso', 'warning', 'execute() for cmd '.$this->getName().' should never happen as we use info commands for the equipment table');
+	}
   }
 
   /*     * **********************Getteur Setteur*************************** */

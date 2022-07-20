@@ -163,7 +163,14 @@ $eqLogics = eqLogic::byType($plugin->getId());
 									<sup><i class="fas fa-question-circle tooltips" title="{{Marge de sécurité à prendre sur l'injection électique (Watt)}}"></i></sup>
 								</label>
 								<div class="col-sm-6">
-									<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="security" placeholder="{{100}}">
+									<div class="input-group">
+										<input type="text" class="eqLogicAttr form-control roundedLeft" data-l1key="configuration" data-l2key="security" placeholder="{{Valeur ou équipement}}">
+										<span class="input-group-btn">
+											<a class="btn btn-default roundedRight listEquipement" data-input="security">
+												<i class="fas fa-list-alt"></i>
+											</a>
+										</span>
+									</div>
 								</div>
 							</div>
 							<div class="form-group">
