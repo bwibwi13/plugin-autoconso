@@ -74,7 +74,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
 			<li role="presentation"><a href="#" class="eqLogicAction" aria-controls="home" role="tab" data-toggle="tab" data-action="returnToThumbnailDisplay"><i class="fas fa-arrow-circle-left"></i></a></li>
 			<li role="presentation" class="active"><a href="#eqlogictab" aria-controls="home" role="tab" data-toggle="tab"><i class="fas fa-tachometer-alt"></i> {{Equipement}}</a></li>
 			<li role="presentation"><a href="#commandtab" aria-controls="home" role="tab" data-toggle="tab"><i class="fas fa-list"></i> {{Commandes}}</a></li>
-			<li role="presentation"><a href="#equtab" aria-controls="home" role="tab" data-toggle="tab"><i class="fas fa-list"></i> {{Equipments Table}}</a></li>
+			<li role="presentation"><a href="#equtab" aria-controls="home" role="tab" data-toggle="tab"><i class="fas fa-list"></i> {{Table d'équipements}}</a></li>
 		</ul>
 		<div class="tab-content">
 			<!-- Onglet de configuration de l'équipement -->
@@ -136,9 +136,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
 									<div class="input-group">
 										<input type="text" class="eqLogicAttr form-control roundedLeft" data-l1key="configuration" data-l2key="injection">
 										<span class="input-group-btn">
-											<a class="btn btn-default roundedRight listEquipement" data-input="injection">
-												<i class="fas fa-list-alt"></i>
-											</a>
+											<a class="btn btn-default roundedRight listEquipement" data-input="injection"><i class="fas fa-list-alt"></i></a>
 										</span>
 									</div>
 								</div>
@@ -151,9 +149,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
 									<div class="input-group">
 										<input type="text" class="eqLogicAttr form-control roundedLeft" data-l1key="configuration" data-l2key="production" placeholder="{{Optionnel}}">
 										<span class="input-group-btn">
-											<a class="btn btn-default roundedRight listEquipement" data-input="production">
-												<i class="fas fa-list-alt"></i>
-											</a>
+											<a class="btn btn-default roundedRight listEquipement" data-input="production"><i class="fas fa-list-alt"></i></a>
 										</span>
 									</div>
 								</div>
@@ -166,9 +162,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
 									<div class="input-group">
 										<input type="text" class="eqLogicAttr form-control roundedLeft" data-l1key="configuration" data-l2key="security" placeholder="{{Valeur ou équipement}}">
 										<span class="input-group-btn">
-											<a class="btn btn-default roundedRight listEquipement" data-input="security">
-												<i class="fas fa-list-alt"></i>
-											</a>
+											<a class="btn btn-default roundedRight listEquipement" data-input="security"><i class="fas fa-list-alt"></i></a>
 										</span>
 									</div>
 								</div>
@@ -207,8 +201,6 @@ $eqLogics = eqLogic::byType($plugin->getId());
 
 			<!-- Onglet des commandes de l'équipement -->
 			<div role="tabpanel" class="tab-pane" id="commandtab">
-				<!-- <a class="btn btn-default btn-sm pull-right cmdAction" data-action="add" style="margin-top:5px;"><i class="fas fa-plus-circle"></i> {{Ajouter un équipement}}</a>
-				<br><br> -->
 				<div class="table-responsive">
 					<table id="table_cmd" class="table table-bordered table-condensed">
 						<thead>
@@ -228,17 +220,19 @@ $eqLogics = eqLogic::byType($plugin->getId());
 
 			<!-- Onglet des équipement à gérer -->
 			<div role="tabpanel" class="tab-pane" id="equtab">
-				<a class="btn btn-default btn-sm pull-right cmdAction" data-action="add" style="margin-top:5px;"><i class="fas fa-plus-circle"></i> {{Ajouter un équipement}}</a>
+				<a class="btn btn-info btn-sm pull-right cmdAction" data-action="add" style="margin-top:5px;"><i class="fas fa-plus-circle"></i> {{Ajouter un équipement à gérer}}</a>
 				<br><br>
 				<div class="table-responsive">
 					<table id="table_equ" class="table table-bordered table-condensed">
 						<thead>
 							<tr>
+								<th class="nothidden">{{ID}}</th>
+								<th class="nothidden">{{Details}}</th>
 								<th style="min-width:200px;width:350px;">{{Nom}}</th>
-								<th style="min-width:80px;width:150px;">{{Consommation}}</th>
+								<th style="min-width:80px;width:150px;">{{Puissance}}</th>
 								<th style="min-width:200px;width:350px;">{{Statut}}</th>
-								<th style="min-width:200px;width:350px;">{{ON Cmd}}</th>
-								<th style="min-width:200px;width:350px;">{{OFF Cmd}}</th>
+								<th style="min-width:200px;width:350px;">{{Commande ON}}</th>
+								<th style="min-width:200px;width:350px;">{{Commande OFF}}</th>
 							</tr>
 						</thead>
 						<tbody>
