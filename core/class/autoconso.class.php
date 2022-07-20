@@ -43,7 +43,7 @@ class autoconso extends eqLogic {
 				try {
 					$c = new Cron\CronExpression(checkAndFixCron($autorefresh), new Cron\FieldFactory);
 					if ($c->isDue()) {
-						$eqLogic->optimizeAutoconso();
+						$eqLogic->optimize();
 					}
 				} catch (Exception $exc) {
 					log::add('autoconso', 'error', __('Expression cron non valide pour', __FILE__) . ' ' . $eqLogic->getHumanName() . ' : ' . $autorefresh);
@@ -55,20 +55,20 @@ class autoconso extends eqLogic {
   /*     * *********************Méthodes d'instance************************* */
 
 	// Called by the listener
-	public static function optimize($_option) {
-//log::add('autoconso', 'debug', 'optimize() called from listener => ' . json_encode($_option));
+	public static function optimizeAutoconso($_option) {
+//log::add('autoconso', 'debug', 'optimizeAutoconso() called from listener => ' . json_encode($_option));
 		$autoconso = autoconso::byId($_option['autoconso_id']);
 		if (is_object($autoconso) && $autoconso->getIsEnable() == 1) {
-			$autoconso->optimizeAutoconso();
+			$autoconso->optimize();
 		} else {
-			log::add('autoconso', 'error', 'optimize() called with erroneous id => ' . json_encode($_option));
+			log::add('autoconso', 'error', 'optimizeAutoconso() called with erroneous id => ' . json_encode($_option));
 		}
 	}
 
 	// Called by the cron()
-	public function optimizeAutoconso() {
+	public function optimize() {
 if (!is_object($this)) {
-	log::add('autoconso', 'debug', 'optimizeAutoconso problem: ('.print_r($_option,true).')');
+	log::add('autoconso', 'debug', 'optimize() problem: ('.print_r($_option,true).')');
 }
 
 		$body = $this->getHumanName().' ';
@@ -161,6 +161,17 @@ if (!is_object($this)) {
 
   // Fonction exécutée automatiquement après la création de l'équipement
   public function postInsert() {
+	$optimize = $this->getCmd(null, 'optimize');
+	if (!is_object($optimize)) {
+		log::add('autoconso', 'debug', 'Creating optimize command');
+		$optimize = new autoconsoCmd();
+		$optimize->setName(__('Optimize', __FILE__));
+		$optimize->setEqLogic_id($this->getId());
+		$optimize->setLogicalId('optimize');
+		$optimize->setType('action');
+		$optimize->setSubType('other');
+		$optimize->save();
+	}
   }
 
   // Fonction exécutée automatiquement avant la mise à jour de l'équipement
@@ -173,10 +184,6 @@ if (!is_object($this)) {
 
   // Fonction exécutée automatiquement avant la sauvegarde (création ou mise à jour) de l'équipement
   public function preSave() {
-		if ($this->getConfiguration('injection') == '') {
-			throw new Exception(__('La mesure d\'injection nette est obligatoire pour gérer l\'autoconsomation', __FILE__));
-		}
-
 	  // Translate human name of equipments to ID
 	  $this->setConfiguration('injection' , cmd::humanReadableToCmd($this->getConfiguration('injection') ));
 	  $this->setConfiguration('production', cmd::humanReadableToCmd($this->getConfiguration('production')));
@@ -185,14 +192,19 @@ if (!is_object($this)) {
 
   // Fonction exécutée automatiquement après la sauvegarde (création ou mise à jour) de l'équipement
   public function postSave() {
+	// Configuration check
+	if ($this->getIsEnable() && $this->getConfiguration('injection') == '') {
+		throw new Exception(__('La mesure d\'injection nette est obligatoire pour gérer l\'autoconsomation', __FILE__));
+	}
+
 	// Define listener to be notified of changes
-	$listener = listener::byClassAndFunction('autoconso', 'optimize', array('autoconso_id' => intval($this->getId())));
+	$listener = listener::byClassAndFunction('autoconso', 'optimizeAutoconso', array('autoconso_id' => intval($this->getId())));
 	if ($this->getIsEnable()) {
 		if (!is_object($listener)) {
 			log::add('autoconso', 'debug', 'Creating new listener');
 			$listener = new listener();
 			$listener->setClass('autoconso');
-			$listener->setFunction('optimize');
+			$listener->setFunction('optimizeAutoconso');
 			$listener->setOption(array('autoconso_id' => intval($this->getId())));
 		}
 		$listener->emptyEvent();
@@ -212,19 +224,6 @@ if (!is_object($this)) {
 //$listener = listener::byClass('autoconso');
 //log::add('autoconso', 'debug', print_r($listener, true));
 				
-				
-        //$cmd = $this->getCmd(null, 'refresh');
-        //if (!is_object($cmd)) {
-        //    $cmd = new googlecastCmd();
-        //    $cmd->setLogicalId('refresh');
-        //    $cmd->setName(__('Rafraîchir', __FILE__));
-        //    $cmd->setIsVisible(1);
-        //    $cmd->setConfiguration('googlecast_cmd', true);
-        //}
-        //$cmd->setType('action');
-        //$cmd->setSubType('other');
-        //$cmd->setEqLogic_id($this->getId());
-        //$cmd->save();
 
 	// Translate ID of equipments to human name
 	$this->setConfiguration('injection' , cmd::cmdToHumanReadable($this->getConfiguration('injection') ));
@@ -234,7 +233,7 @@ if (!is_object($this)) {
   // Fonction exécutée automatiquement avant la suppression de l'équipement
   public function preRemove() {
 	// Clean listener
-	$listener = listener::byClassAndFunction('autoconso', 'optimize', array('autoconso_id' => intval($this->getId())));
+	$listener = listener::byClassAndFunction('autoconso', 'optimizeAutoconso', array('autoconso_id' => intval($this->getId())));
 	if (is_object($listener)) {
 		$listener->remove();
 	}
@@ -293,15 +292,16 @@ class autoconsoCmd extends cmd {
 
   /*     * *********************Methode d'instance************************* */
 
-  /*
-  * Permet d'empêcher la suppression des commandes même si elles ne sont pas dans la nouvelle configuration de l'équipement envoyé en JS
+  // Empêche la suppression des commandes même si elles ne sont pas dans la nouvelle configuration de l'équipement envoyé en JS
   public function dontRemoveCmd() {
-    return true;
+	if (true) { // Protect the actual command but not the equipments from the optimisation table
+		return true;
+	}
   }
-  */
 
   // Exécution d'une commande
   public function execute($_options = array()) {
+	  log::add('autoconso', 'debug', 'execute() for cmd '.$this->getName().' with options: '.json_encode($_option));
   }
 
   /*     * **********************Getteur Setteur*************************** */
