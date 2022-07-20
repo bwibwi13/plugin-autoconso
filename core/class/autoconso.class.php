@@ -188,15 +188,16 @@ if (!is_object($this)) {
 	if ($this->getConfiguration('security') != '' && !is_numeric($this->getConfiguration('security'))) {
 		$this->setConfiguration('security', cmd::humanReadableToCmd($this->getConfiguration('security')));
 	}
-  }
 
-  // Fonction exécutée automatiquement après la sauvegarde (création ou mise à jour) de l'équipement
-  public function postSave() {
 	// Configuration check
 	if ($this->getIsEnable() && $this->getConfiguration('injection') == '') {
 		throw new Exception(__('La mesure d\'injection nette est obligatoire pour gérer l\'autoconsomation', __FILE__));
 	}
 
+  }
+
+  // Fonction exécutée automatiquement après la sauvegarde (création ou mise à jour) de l'équipement
+  public function postSave() {
 	// Define listener to be notified of changes
 	$listener = listener::byClassAndFunction('autoconso', 'optimizeAutoconso', array('autoconso_id' => intval($this->getId())));
 	if ($this->getIsEnable()) {
@@ -297,10 +298,11 @@ class autoconsoCmd extends cmd {
 
   // Empêche la suppression des commandes même si elles ne sont pas dans la nouvelle configuration de l'équipement envoyé en JS
   public function dontRemoveCmd() {
-	//if ($this->getType() == 'action') { // Protect the actual command but not the equipments from the optimisation table
-log::add('autoconso', 'debug', 'dontRemoveCmd() for cmd '.$this->getName().' with type: '.$this->getType().' with logicalID: '.$this->getLogicalId());
+	if ($this->getType() == 'action') { // Protect the actual command but not the equipments from the optimisation table
+		log::add('autoconso', 'warning', 'dontRemoveCmd() protected cmd '.$this->getName().' with type: '.$this->getType());
 		return true;
-	//}
+	}
+	return false;
   }
 
   // Exécution d'une commande
@@ -316,6 +318,25 @@ log::add('autoconso', 'debug', 'dontRemoveCmd() for cmd '.$this->getName().' wit
 	if ($this->getType() == 'info') {
 		log::add('autoconso', 'warning', 'execute() for cmd '.$this->getName().' should never happen as we use info commands for the equipment table');
 	}
+  }
+
+  public function preSave() {
+	// Translate human name of equipments to ID
+	$this->setConfiguration('status' , cmd::humanReadableToCmd($this->getConfiguration('status') ));
+	$this->setConfiguration('onCmd' , cmd::humanReadableToCmd($this->getConfiguration('onCmd') ));
+	$this->setConfiguration('offCmd' , cmd::humanReadableToCmd($this->getConfiguration('offCmd') ));
+
+	// Configuration check
+
+				
+  }
+
+  // Fonction exécutée automatiquement après la sauvegarde (création ou mise à jour) de l'équipement
+  public function postSave() {
+	// Translate ID of equipments to human name
+	$this->setConfiguration('status' , cmd::cmdToHumanReadable($this->getConfiguration('status') ));
+	$this->setConfiguration('onCmd' , cmd::cmdToHumanReadable($this->getConfiguration('onCmd') ));
+	$this->setConfiguration('offCmd' , cmd::cmdToHumanReadable($this->getConfiguration('offCmd') ));
   }
 
   /*     * **********************Getteur Setteur*************************** */
