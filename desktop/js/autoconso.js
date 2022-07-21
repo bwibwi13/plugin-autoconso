@@ -38,7 +38,6 @@ function addCmdToTable(_cmd) {
     var _cmd = {configuration: {}}
   }
   
-//alert(_cmd.type)
   if (_cmd.type == 'action') { // This is the real command for the command table
 	var tableTarget = '#table_cmd'
 	
@@ -66,14 +65,16 @@ function addCmdToTable(_cmd) {
 	tr += '</tr>'
   } else { // This is an equipment for the equipment table
 	var tableTarget = '#table_equ'
+	_cmd.type = 'info'
+	_cmd.subType = 'string' // TODO: Subtype, even if not used, should be string but I can't find a way to force it by default :(
 	
 	var tr = '<tr class="cmd" data-cmd_id="' + init(_cmd.id) + '">'
-	tr += '<td class="nothidden">'
+	tr += '<td class="hidden">'
 	tr += '<span class="cmdAttr" data-l1key="id"></span>'
 	tr += '</td>'
-	tr += '<td class="nothidden">'
-	tr += '<input class="cmdAttr input-sm" data-l1key="type" value="info" disabled/>'
-	tr += '<input class="cmdAttr input-sm" data-l1key="subType" value="equipment" >'
+	tr += '<td class="hidden">'
+	tr += '<input class="cmdAttr input-sm" data-l1key="type" value="' + init(_cmd.type) + '" disabled/>'
+    tr += '<span class="subType" subType="' + init(_cmd.subType) + '"></span>'
 	tr += '<label class="checkbox-inline"><input type="checkbox" class="cmdAttr" data-l1key="isVisible" unchecked disabled/>{{Afficher}}</label> '
 	tr += '<label class="checkbox-inline"><input type="checkbox" class="cmdAttr" data-l1key="isHistorized" unchecked disabled/>{{Historiser}}</label> '
 	tr += '</td>'
@@ -81,11 +82,11 @@ function addCmdToTable(_cmd) {
 	tr += '<input class="cmdAttr form-control input-sm" data-l1key="name" placeholder="{{Nom}}">'
 	tr += '</td>'
 	tr += '<td>'
-	tr += '<input class="cmdAttr form-control input-sm" data-l1key="power" placeholder="{{Puissance estimée (W)}}">'
+	tr += '<input class="cmdAttr form-control input-sm" data-l1key="configuration" data-l2key="power" placeholder="{{Puissance estimée (W)}}">'
 	tr += '</td>'
 	tr += '<td>'
 	tr += '<div class="input-group">'
-	tr += '  <input type="text" class="eqLogicAttr form-control roundedLeft" data-l1key="configuration" data-l2key="status" placeholder="{{Statut on/off}}">'
+	tr += '  <input type="text" class="cmdAttr form-control roundedLeft" data-l1key="configuration" data-l2key="status" placeholder="{{Info on/off}}">'
 	tr += '  <span class="input-group-btn">'
 	tr += '    <a class="btn btn-default roundedRight listEquipement" data-input="status" data-type="info"><i class="fas fa-list-alt"></i></a>'
 	tr += '  </span>'
@@ -93,7 +94,7 @@ function addCmdToTable(_cmd) {
 	tr += '</td>'
 	tr += '<td>'
 	tr += '<div class="input-group">'
-	tr += '  <input type="text" class="eqLogicAttr form-control roundedLeft" data-l1key="configuration" data-l2key="onCmd" placeholder="{{Commande ON}}">'
+	tr += '  <input type="text" class="cmdAttr form-control roundedLeft" data-l1key="configuration" data-l2key="onCmd" placeholder="{{Commande ON}}">'
 	tr += '  <span class="input-group-btn">'
 	tr += '    <a class="btn btn-default roundedRight listEquipement" data-input="onCmd" data-type="action"><i class="fas fa-list-alt"></i></a>'
 	tr += '  </span>'
@@ -101,7 +102,7 @@ function addCmdToTable(_cmd) {
 	tr += '</td>'
 	tr += '<td>'
 	tr += '<div class="input-group">'
-	tr += '  <input type="text" class="eqLogicAttr form-control roundedLeft" data-l1key="configuration" data-l2key="offCmd" placeholder="{{Commande OFF}}">'
+	tr += '  <input type="text" class="cmdAttr form-control roundedLeft" data-l1key="configuration" data-l2key="offCmd" placeholder="{{Commande OFF}}">'
 	tr += '  <span class="input-group-btn">'
 	tr += '    <a class="btn btn-default roundedRight listEquipement" data-input="offCmd" data-type="action"><i class="fas fa-list-alt"></i></a>'
 	tr += '  </span>'

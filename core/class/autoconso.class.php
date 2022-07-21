@@ -316,27 +316,44 @@ class autoconsoCmd extends cmd {
 	}
 	
 	if ($this->getType() == 'info') {
-		log::add('autoconso', 'warning', 'execute() for cmd '.$this->getName().' should never happen as we use info commands for the equipment table');
+		log::add('autoconso', 'warning', 'execute() for cmd '.$this->getName().' should never happen as info commands are used for the equipment table');
 	}
   }
 
   public function preSave() {
-	// Translate human name of equipments to ID
-	$this->setConfiguration('status' , cmd::humanReadableToCmd($this->getConfiguration('status') ));
-	$this->setConfiguration('onCmd' , cmd::humanReadableToCmd($this->getConfiguration('onCmd') ));
-	$this->setConfiguration('offCmd' , cmd::humanReadableToCmd($this->getConfiguration('offCmd') ));
+	if ($this->getType() == 'info') { // Equipment from the optimisation table
+		// Translate human name of equipments to ID
+		$this->setConfiguration('status' , cmd::humanReadableToCmd($this->getConfiguration('status') ));
+		$this->setConfiguration('onCmd' , cmd::humanReadableToCmd($this->getConfiguration('onCmd') ));
+		$this->setConfiguration('offCmd' , cmd::humanReadableToCmd($this->getConfiguration('offCmd') ));
 
-	// Configuration check
+		// Configuration check
+		if ($this->getConfiguration('power') == '') {
+			throw new Exception(__('La configuration de puissance estimée est indispensable', __FILE__));
+		}
+		if ($this->getConfiguration('status') == '') {
+			throw new Exception(__('La configuration d\'information d\'état (on/off) est indispensable', __FILE__));
+		}
+		if ($this->getConfiguration('onCmd') == '') {
+			throw new Exception(__('La configuration de commande ON est indispensable', __FILE__));
+		}
+		if ($this->getConfiguration('offCmd') == '') {
+			throw new Exception(__('La configuration de commande OFF est indispensable', __FILE__));
+		}
+	}
+
 
 				
   }
 
   // Fonction exécutée automatiquement après la sauvegarde (création ou mise à jour) de l'équipement
   public function postSave() {
-	// Translate ID of equipments to human name
-	$this->setConfiguration('status' , cmd::cmdToHumanReadable($this->getConfiguration('status') ));
-	$this->setConfiguration('onCmd' , cmd::cmdToHumanReadable($this->getConfiguration('onCmd') ));
-	$this->setConfiguration('offCmd' , cmd::cmdToHumanReadable($this->getConfiguration('offCmd') ));
+	if ($this->getType() == 'info') {  // Equipment from the optimisation table
+		// Translate ID of equipments to human name
+		$this->setConfiguration('status' , cmd::cmdToHumanReadable($this->getConfiguration('status') ));
+		$this->setConfiguration('onCmd' , cmd::cmdToHumanReadable($this->getConfiguration('onCmd') ));
+		$this->setConfiguration('offCmd' , cmd::cmdToHumanReadable($this->getConfiguration('offCmd') ));
+	}
   }
 
   /*     * **********************Getteur Setteur*************************** */

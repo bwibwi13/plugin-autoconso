@@ -226,11 +226,11 @@ $eqLogics = eqLogic::byType($plugin->getId());
 					<table id="table_equ" class="table table-bordered table-condensed">
 						<thead>
 							<tr>
-								<th class="nothidden">{{ID}}</th>
-								<th class="nothidden">{{Details}}</th>
+								<th class="hidden">{{ID}}</th>
+								<th class="hidden">{{Details}}</th>
 								<th style="min-width:200px;width:350px;">{{Nom}}</th>
-								<th style="min-width:80px;width:150px;">{{Puissance}}</th>
-								<th style="min-width:200px;width:350px;">{{Statut}}</th>
+								<th style="min-width:80px;width:150px;">{{Puissance (W)}}</th>
+								<th style="min-width:200px;width:350px;">{{Info état}}</th>
 								<th style="min-width:200px;width:350px;">{{Commande ON}}</th>
 								<th style="min-width:200px;width:350px;">{{Commande OFF}}</th>
 							</tr>
