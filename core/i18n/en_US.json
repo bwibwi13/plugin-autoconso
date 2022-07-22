@@ -53,6 +53,7 @@
 		 "Puissance (W)": "Power (W)",
 		 "Commande statut": "State command",
 		 "Commande ON": "ON command",
-		 "Commande OFF": "OFF command"
+		 "Commande OFF": "OFF command",
+		 "reorder explanation": "Drag & drop table rows to reoder and change priorities"
    }
 }

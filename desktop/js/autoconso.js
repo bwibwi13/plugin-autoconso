@@ -24,7 +24,7 @@ $("#eqlogictab").delegate(".listEquipement", 'click', function () {
 $("#equtab").delegate(".listEquipement", 'click', function () {
 	var el = $(this)
 //el.closest('tr').find('[data-l1key=configuration][data-l2key=' + el.data('input') + ']').css('outline', '3px solid red')
-	jeedom.cmd.getSelectModal({cmd: {type: $(this).data('type')}}, function (result) {
+	jeedom.cmd.getSelectModal({cmd:{type:$(this).data('type'), subType:$(this).data('subType')}}, function (result) {
 		var param = el.closest('.input-group').find('[data-l1key=configuration][data-l2key=' + el.data('input') + ']')
 		param.val(result.human)
 	})
@@ -79,7 +79,7 @@ function addCmdToTable(_cmd) {
 	tr += '<label class="checkbox-inline"><input type="checkbox" class="cmdAttr" data-l1key="isHistorized" unchecked disabled/>{{Historiser}}</label> '
 	tr += '</td>'
 	tr += '<td>'
-	tr += '<input class="cmdAttr form-control input-sm" data-l1key="order" disabled>'
+	tr += '<input class="cmdAttr form-control input-sm" data-l1key="order" style="text-align:center;" disabled>'
 	tr += '</td>'
 	tr += '<td>'
 	tr += '<input class="cmdAttr form-control input-sm" data-l1key="name" placeholder="{{Nom}}">'
@@ -91,7 +91,7 @@ function addCmdToTable(_cmd) {
 	tr += '<div class="input-group">'
 	tr += '  <input type="text" class="cmdAttr form-control roundedLeft" data-l1key="configuration" data-l2key="status" placeholder="{{Commande statut}}">'
 	tr += '  <span class="input-group-btn">'
-	tr += '    <a class="btn btn-default roundedRight listEquipement" data-input="status" data-type="info"><i class="fas fa-list-alt"></i></a>'
+	tr += '    <a class="btn btn-default roundedRight listEquipement" data-input="status" data-type="info" data-subType="binary"><i class="fas fa-list-alt"></i></a>'
 	tr += '  </span>'
 	tr += '</div>'
 	tr += '</td>'

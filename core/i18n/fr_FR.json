@@ -13,6 +13,7 @@
 		"Total injection helper": "Equipement qui renseigne le bilan d'injection nette instantanée de l'habitation",
 		"Solar production helper": "Equipement qui renseigne la puissance de production photovoltaïque instantanée",
 		"security margin helper": "Marge de sécurité à prendre sur l'injection électique (Watt) Peut être un nombre ou une commande d'un autre équipement",
-		"Safety cron helper": "Cron de sécurité pour vérification régulière de la situation (si les triggers ne sont pas éfficaces)"
+		"Safety cron helper": "Cron de sécurité pour vérification régulière de la situation (si les triggers ne sont pas éfficaces)",
+		 "reorder explanation": "Faites glisser les lignes du tableau pour modifier l'order et la priorité"
     }
 }

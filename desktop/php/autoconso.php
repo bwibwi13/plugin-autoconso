@@ -240,6 +240,8 @@ $eqLogics = eqLogic::byType($plugin->getId());
 						</tbody>
 					</table>
 				</div>
+				<br>
+				<div class="alert alert-info"><i class="fas fa-info"></i> {{reorder explanation}}</div>
 			</div><!-- /.tabpanel #equtab-->
 		</div><!-- /.tab-content -->
 	</div><!-- /.eqLogic -->
