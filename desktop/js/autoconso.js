@@ -46,7 +46,7 @@ function addCmdToTable(_cmd) {
 	tr += '<span class="cmdAttr" data-l1key="id"></span>'
 	tr += '</td>'
 	tr += '<td>'
-	tr += '<input class="cmdAttr form-control input-sm" data-l1key="name" disabled placeholder="{{Nom de la commande}}">'
+	tr += '<input class="cmdAttr form-control input-sm" data-l1key="name" disabled">'
 	tr += '</td>'
 	tr += '<td>'
 	tr += '<div class="input-group">'
@@ -60,7 +60,7 @@ function addCmdToTable(_cmd) {
 	tr += '<td>'
 	if (is_numeric(_cmd.id)) {
 		tr += '<a class="btn btn-default btn-xs cmdAction" data-action="configure"><i class="fas fa-cogs"></i></a> '
-		tr += '<a class="btn btn-default btn-xs cmdAction" data-action="test"><i class="fas fa-rss"></i> Tester</a>'
+		tr += '<a class="btn btn-default btn-xs cmdAction" data-action="test"><i class="fas fa-rss"></i> {{Tester}}</a>'
 	}
 	tr += '</tr>'
   } else { // This is an equipment for the equipment table
@@ -82,11 +82,11 @@ function addCmdToTable(_cmd) {
 	tr += '<input class="cmdAttr form-control input-sm" data-l1key="name" placeholder="{{Nom}}">'
 	tr += '</td>'
 	tr += '<td>'
-	tr += '<input class="cmdAttr form-control input-sm" data-l1key="configuration" data-l2key="power" placeholder="{{Puissance estimée (W)}}">'
+	tr += '<input class="cmdAttr form-control input-sm" data-l1key="configuration" data-l2key="power" placeholder="{{Puissance estimee (W)}}">'
 	tr += '</td>'
 	tr += '<td>'
 	tr += '<div class="input-group">'
-	tr += '  <input type="text" class="cmdAttr form-control roundedLeft" data-l1key="configuration" data-l2key="status" placeholder="{{Info on/off}}">'
+	tr += '  <input type="text" class="cmdAttr form-control roundedLeft" data-l1key="configuration" data-l2key="status" placeholder="{{Commande statut}}">'
 	tr += '  <span class="input-group-btn">'
 	tr += '    <a class="btn btn-default roundedRight listEquipement" data-input="status" data-type="info"><i class="fas fa-list-alt"></i></a>'
 	tr += '  </span>'

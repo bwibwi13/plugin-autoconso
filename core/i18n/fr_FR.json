@@ -1,0 +1,18 @@
+{
+    "plugins\/autoconso\/core\/class\/autoconso.class.php": {
+        "error missing injection": "La mesure d\\'injection nette est obligatoire pour gérer l\\'autoconsomation",
+		"error missing power": "La configuration de puissance estimée est indispensable",
+		"error missing state": "La configuration d\\'information d\\'état (on/off) est indispensable",
+		"error missing cmdOn": "La configuration de commande ON est indispensable",
+		"error missing cmdOff": "La configuration de commande OFF est indispensable"
+    },
+    "plugins\/autoconso\/desktop\/js\/autoconso.js": {
+		"Puissance estimee (W)": "Puissance estimée (W)"
+    },
+    "plugins\/autoconso\/desktop\/php\/autoconso.php": {
+		"Total injection helper": "Equipement qui renseigne le bilan d'injection nette instantanée de l'habitation",
+		"Solar production helper": "Equipement qui renseigne la puissance de production photovoltaïque instantanée",
+		"security margin helper": "Marge de sécurité à prendre sur l'injection électique (Watt) Peut être un nombre ou une commande d'un autre équipement",
+		"Safety cron helper": "Cron de sécurité pour vérification régulière de la situation (si les triggers ne sont pas éfficaces)"
+    }
+}

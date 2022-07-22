@@ -65,29 +65,27 @@ class autoconso extends eqLogic {
 		}
 	}
 
-	// Called by the cron()
 	public function optimize() {
-if (!is_object($this)) {
-	log::add('autoconso', 'debug', 'optimize() problem: ('.print_r($_option,true).')');
-}
+if (!is_object($this)) log::add('autoconso', 'error', 'optimize() problem: ('.print_r($_option,true).')');
 
 		$body = $this->getHumanName().' ';
 	
 		// Build table of equipment to control (TODO retrieve from configuration)
-		$orderedList = array(
-			//    0:Name    1:Consumption 2:Status 3:Turn ON 4:Turn OFF
-			array('autoconso 1', 2800,      6856,    6857,     6858),
-			array('autoconso 2',  700,      6861,    6862,     6863),
-			array('autoconso 3',  300,      6866,    6867,     6868)
-		);
-	
+		$equList = $this->getCmd('info', null, null, true);
+//log::add('autoconso', 'debug', print_r($equList[0],true));
+		$orderedList = array();
+		foreach ($equList as $equCmd) {
+			array_push($orderedList, array($equCmd->getName(), $equCmd->getConfiguration('power'), $equCmd->getConfiguration('status'), $equCmd->getConfiguration('onCmd'), $equCmd->getConfiguration('offCmd')));
+		}
+//log::add('autoconso', 'debug', print_r($orderedList,true));
+
 		$currentPower = jeedom::evaluateExpression($this->getConfiguration('injection'));
 		$powerPV      = jeedom::evaluateExpression($this->getConfiguration('production'));
 
 		// Estimate consumption if everything is turned off
 		$estimatedPower = $currentPower;
 		foreach ($orderedList as $electricItem) {
-			$turnedON = intval(cmd::byId($electricItem[2])->execCmd());
+			$turnedON = intval(cmd::byId(str_replace('#', '', $electricItem[2]))->execCmd());
 			if ($turnedON) {
 				$estimatedPower += $electricItem[1];
 			}
@@ -110,13 +108,13 @@ if (!is_object($this)) {
 
 		// Optimize auto-consumption
 		foreach ($orderedList as $electricItem) {
-			$turnedON = intval(cmd::byId($electricItem[2])->execCmd());
+			$turnedON = intval(cmd::byId(str_replace('#', '', $electricItem[2]))->execCmd());
 	
 			if (($estimatedPower-$electricItem[1]>$securityMargin) && ($electricItem[1]<$powerPV)) {
 				// It should be ON
 				if (!$turnedON) {
 					// Turn ON
-					cmd::byId($electricItem[3])->execCmd();
+					cmd::byId(str_replace('#', '', $electricItem[3]))->execCmd();
 					//$body .= cmd::byId($electricItem[2])->getName();
 					$body .= $electricItem[0];
 					$body .= ' turned ON ('.$estimatedPower.'-'.$electricItem[1].'). ';
@@ -133,7 +131,7 @@ if (!is_object($this)) {
 				// It should be OFF
 				if ($turnedON) {
 					// Turn OFF
-					cmd::byId($electricItem[4])->execCmd();
+					cmd::byId(str_replace('#', '', $electricItem[4]))->execCmd();
 					//$body .= cmd::byId($electricItem[2])->getName();
 					$body .= $electricItem[0];
 					$body .= ' turned OFF ('.$currentPower.'+'.$electricItem[1].'). ';
@@ -150,7 +148,7 @@ if (!is_object($this)) {
 		}
 		
 		$body .= 'Should end up with an injection of '.$currentPower.'W.';
-		log::add('autoconso', 'debug', $body);
+		log::add('autoconso', 'info', $body);
 	}
 
   // Fonction exécutée automatiquement avant la création de l'équipement
@@ -191,7 +189,7 @@ if (!is_object($this)) {
 
 	// Configuration check
 	if ($this->getIsEnable() && $this->getConfiguration('injection') == '') {
-		throw new Exception(__('La mesure d\'injection nette est obligatoire pour gérer l\'autoconsomation', __FILE__));
+		throw new Exception(__('error missing injection', __FILE__));
 	}
 
   }
@@ -329,21 +327,18 @@ class autoconsoCmd extends cmd {
 
 		// Configuration check
 		if ($this->getConfiguration('power') == '') {
-			throw new Exception(__('La configuration de puissance estimée est indispensable', __FILE__));
+			throw new Exception(__('error missing power', __FILE__));
 		}
 		if ($this->getConfiguration('status') == '') {
-			throw new Exception(__('La configuration d\'information d\'état (on/off) est indispensable', __FILE__));
+			throw new Exception(__('error missing state', __FILE__));
 		}
 		if ($this->getConfiguration('onCmd') == '') {
-			throw new Exception(__('La configuration de commande ON est indispensable', __FILE__));
+			throw new Exception(__('error missing cmdOn', __FILE__));
 		}
 		if ($this->getConfiguration('offCmd') == '') {
-			throw new Exception(__('La configuration de commande OFF est indispensable', __FILE__));
+			throw new Exception(__('error missing cmdOff', __FILE__));
 		}
 	}
-
-
-				
   }
 
   // Fonction exécutée automatiquement après la sauvegarde (création ou mise à jour) de l'équipement

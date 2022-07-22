@@ -28,7 +28,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
 		<legend><i class="fas fa-table"></i> {{Mes Autoconso}}</legend>
 		<?php
 		if (count($eqLogics) == 0) {
-			echo '<br><div class="text-center" style="font-size:1.2em;font-weight:bold;">{{Aucun équipement Autoconso trouvé, cliquer sur "Ajouter" pour commencer}}</div>';
+			echo '<br><div class="text-center" style="font-size:1.2em;font-weight:bold;">{{Aucun équipement Autoconso, cliquer sur "Ajouter" pour commencer}}</div>';
 		} else {
 			// Champ de recherche
 			echo '<div class="input-group" style="margin:5px;">';
@@ -73,7 +73,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
 		<ul class="nav nav-tabs" role="tablist">
 			<li role="presentation"><a href="#" class="eqLogicAction" aria-controls="home" role="tab" data-toggle="tab" data-action="returnToThumbnailDisplay"><i class="fas fa-arrow-circle-left"></i></a></li>
 			<li role="presentation" class="active"><a href="#eqlogictab" aria-controls="home" role="tab" data-toggle="tab"><i class="fas fa-tachometer-alt"></i> {{Equipement}}</a></li>
-			<li role="presentation"><a href="#commandtab" aria-controls="home" role="tab" data-toggle="tab"><i class="fas fa-list"></i> {{Commandes}}</a></li>
+			<li role="presentation"><a href="#commandtab" aria-controls="home" role="tab" data-toggle="tab"><i class="fas fa-list-alt"></i> {{Commandes}}</a></li>
 			<li role="presentation"><a href="#equtab" aria-controls="home" role="tab" data-toggle="tab"><i class="fas fa-list"></i> {{Table d'équipements}}</a></li>
 		</ul>
 		<div class="tab-content">
@@ -130,7 +130,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
 							<legend><i class="fas fa-cogs"></i> {{Paramètres spécifiques}}</legend>
 							<div class="form-group">
 								<label class="col-sm-4 control-label">{{Injection nette}}
-									<sup><i class="fas fa-question-circle tooltips" title="{{Equipement qui renseigne le bilan d'injection nette instantanée de l'habitation}}"></i></sup>
+									<sup><i class="fas fa-question-circle tooltips" title="{{Total injection helper}}"></i></sup>
 								</label>
 								<div class="col-sm-6">
 									<div class="input-group">
@@ -143,7 +143,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
 							</div>
 							<div class="form-group">
 								<label class="col-sm-4 control-label">{{Production solaire}}
-									<sup><i class="fas fa-question-circle tooltips" title="{{Equipement qui renseigne la puissance de production photovoltaïque instantanée}}"></i></sup>
+									<sup><i class="fas fa-question-circle tooltips" title="{{Solar production helper}}"></i></sup>
 								</label>
 								<div class="col-sm-6">
 									<div class="input-group">
@@ -156,7 +156,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
 							</div>
 							<div class="form-group">
 								<label class="col-sm-4 control-label">{{Marge de sécurité}}
-									<sup><i class="fas fa-question-circle tooltips" title="{{Marge de sécurité à prendre sur l'injection électique (Watt)}}"></i></sup>
+									<sup><i class="fas fa-question-circle tooltips" title="{{security margin helper}}"></i></sup>
 								</label>
 								<div class="col-sm-6">
 									<div class="input-group">
@@ -168,8 +168,8 @@ $eqLogics = eqLogic::byType($plugin->getId());
 								</div>
 							</div>
 							<div class="form-group">
-								<label class="col-sm-4 control-label">{{Fonctionnement régulier}}
-									<sup><i class="fas fa-question-circle tooltips" title="{{Cron de sécurité pour vérification régulière de la situation (si les triggers ne sont pas efficaces)}}"></i></sup>
+								<label class="col-sm-4 control-label">{{Cron de backup}}
+									<sup><i class="fas fa-question-circle tooltips" title="{{Safety cron helper}}"></i></sup>
 								</label>
 								<div class="col-sm-6">
 									<div class="input-group">
@@ -187,7 +187,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
 						<!-- Partie droite de l'onglet "Équipement" -->
 						<!-- Affiche un champ de commentaire par défaut mais vous pouvez y mettre ce que vous voulez -->
 						<div class="col-lg-6">
-							<legend><i class="fas fa-info"></i> {{Informations}}</legend>
+							<legend><i class="fas fa-info"></i> {{Information}}</legend>
 							<div class="form-group">
 								<label class="col-sm-4 control-label">{{Description}}</label>
 								<div class="col-sm-6">
@@ -230,7 +230,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
 								<th class="hidden">{{Details}}</th>
 								<th style="min-width:200px;width:350px;">{{Nom}}</th>
 								<th style="min-width:80px;width:150px;">{{Puissance (W)}}</th>
-								<th style="min-width:200px;width:350px;">{{Info état}}</th>
+								<th style="min-width:200px;width:350px;">{{Commande statut}}</th>
 								<th style="min-width:200px;width:350px;">{{Commande ON}}</th>
 								<th style="min-width:200px;width:350px;">{{Commande OFF}}</th>
 							</tr>

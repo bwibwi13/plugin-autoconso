@@ -1,5 +1,5 @@
 # Changelog plugin Autoconsommation
 
-# Juillet 2022
+# July 2022
 
-- Première version
+- First version
