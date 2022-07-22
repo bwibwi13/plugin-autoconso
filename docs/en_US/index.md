@@ -1,3 +1,9 @@
+---
+layout: default
+title: Autoconsommation
+lang: en_US
+pluginId: autoconso
+---
 # Autoconsommation Plugin
 
 **Jeedom** plugin to optimize electrical auto-consumption (in case of solar power plan).
