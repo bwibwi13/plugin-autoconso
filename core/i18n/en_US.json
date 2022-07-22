@@ -47,6 +47,7 @@
 		"Cron de backup": "Backup cron",
 		"Safety cron helper": "Security cron for regular check (in case triggers are not working well)",
 		"Assistant cron": "Cron helper",
+		"Priorité": "Priority",
          "Nom": "Name",
 		 "Ajouter un équipement à gérer": "Add an equipment to manage",
 		 "Puissance (W)": "Power (W)",

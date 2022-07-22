@@ -16,13 +16,16 @@ The *Specific parameters* allow to configure what is needed to run the plugin in
 - **Solar production**: Equipment info with the instant electrical production from the solar inverter (optional)
 - **Security margin**: Fixed value or equipment info to define a security margin of minimum injection to consider in the regulation
 - **Backup cron**: Cron expression to run the optimization algorithm at a regular pace (in case the triggers would not be sufficient)
+
 **Note**: All the power information is considered as injection back to the grid. (This allows to be consistent with a positive power from the solar inverter.)
 
 ## Commands tab
 The *Commands tab* holds only the default action that runs the optimization algorithm.
+
 There is nothing to configure here.
 
 ##Equipment table tab
+
 The *Equipment table* tab allows to list the equipments that will be controlled when optimizing auto-consumption.
 ![Equipment table](../images/equipmentTable.png)
 

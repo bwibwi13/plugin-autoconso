@@ -228,8 +228,9 @@ $eqLogics = eqLogic::byType($plugin->getId());
 							<tr>
 								<th class="hidden">{{ID}}</th>
 								<th class="hidden">{{Details}}</th>
-								<th style="min-width:200px;width:350px;">{{Nom}}</th>
-								<th style="min-width:80px;width:150px;">{{Puissance (W)}}</th>
+								<th style="min-width:50px;width:50px;">{{Priorité}}</th>
+								<th style="min-width:150px;width:350px;">{{Nom}}</th>
+								<th style="min-width:50px;width:100px;">{{Puissance (W)}}</th>
 								<th style="min-width:200px;width:350px;">{{Commande statut}}</th>
 								<th style="min-width:200px;width:350px;">{{Commande ON}}</th>
 								<th style="min-width:200px;width:350px;">{{Commande OFF}}</th>

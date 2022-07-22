@@ -18,7 +18,6 @@
 $("#eqlogictab").delegate(".listEquipement", 'click', function () {
   var topic = $(this).data('input')
   jeedom.cmd.getSelectModal({cmd: {type: 'info'}}, function (result) {
-//alert(JSON.stringify($('[data-l1key=configuration][data-l2key=' + topic + ']')))
 	$('[data-l1key=configuration][data-l2key=' + topic + ']').val(result.human)
   })
 })
@@ -34,6 +33,7 @@ $("#equtab").delegate(".listEquipement", 'click', function () {
 
 /* Fonction permettant l'affichage des commandes dans l'équipement */
 function addCmdToTable(_cmd) {
+//alert(JSON.stringify(_cmd))
   if (!isset(_cmd)) {
     var _cmd = {configuration: {}}
   }
@@ -77,6 +77,9 @@ function addCmdToTable(_cmd) {
     tr += '<span class="subType" subType="' + init(_cmd.subType) + '"></span>'
 	tr += '<label class="checkbox-inline"><input type="checkbox" class="cmdAttr" data-l1key="isVisible" unchecked disabled/>{{Afficher}}</label> '
 	tr += '<label class="checkbox-inline"><input type="checkbox" class="cmdAttr" data-l1key="isHistorized" unchecked disabled/>{{Historiser}}</label> '
+	tr += '</td>'
+	tr += '<td>'
+	tr += '<input class="cmdAttr form-control input-sm" data-l1key="order" disabled>'
 	tr += '</td>'
 	tr += '<td>'
 	tr += '<input class="cmdAttr form-control input-sm" data-l1key="name" placeholder="{{Nom}}">'
@@ -136,5 +139,11 @@ $("#table_equ").sortable({
   items: ".cmd",
   placeholder: "ui-state-highlight",
   tolerance: "intersect",
-  forcePlaceholderSize: true
+  forcePlaceholderSize: true,
+  update: function(event, ui) {
+	  var order = 1
+	  $('[data-l1key=order]').each(function(){
+		  $(this).val(order++)
+	  })
+  }
 })
