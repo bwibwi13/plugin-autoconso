@@ -2,8 +2,8 @@
 	"id" : "autoconso",
 	"name" : "Autoconsommation",
 	"description" : {
-		"fr_FR": "Plugin pour maximiser l'autoconsommation (dans le cas d'une installation photovoltaïque)",
-		"en_US": "Plugin to optimise auto-consumption (in case of solar power plan)"
+		"fr_FR": "Plugin pour allumer et etteindre des autres équipements Jeedom afin d'optimiser l'autoconsommation électrique (dans le cas d'une installation photovoltaïque)",
+		"en_US": "Plugin to turn on and off other Jeedom equipments in order to optimise electrical auto-consumption (in case of solar power plan)"
 	},
 	"licence" : "AGPL",
 	"author" : "bwibwi13",
