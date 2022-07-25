@@ -159,7 +159,7 @@ if (!is_object($this)) log::add('autoconso', 'error', 'optimize() problem: ('.pr
   public function postInsert() {
 	$optimize = $this->getCmd(null, 'optimize');
 	if (!is_object($optimize)) {
-		log::add('autoconso', 'debug', 'Creating optimize command');
+		log::add('autoconso', 'debug', 'Create optimize command');
 		$optimize = new autoconsoCmd();
 		$optimize->setName(__('Optimize', __FILE__));
 		$optimize->setEqLogic_id($this->getId());
@@ -200,7 +200,7 @@ if (!is_object($this)) log::add('autoconso', 'error', 'optimize() problem: ('.pr
 	$listener = listener::byClassAndFunction('autoconso', 'optimizeAutoconso', array('autoconso_id' => intval($this->getId())));
 	if ($this->getIsEnable()) {
 		if (!is_object($listener)) {
-			log::add('autoconso', 'debug', 'Creating new listener');
+			log::add('autoconso', 'debug', 'Create new listener');
 			$listener = new listener();
 			$listener->setClass('autoconso');
 			$listener->setFunction('optimizeAutoconso');
@@ -217,12 +217,7 @@ if (!is_object($this)) log::add('autoconso', 'error', 'optimize() problem: ('.pr
 			log::add('autoconso', 'debug', 'Delete existing listener as item is disabled');
 			$listener->remove();
 		}
-
 	}
-
-//$listener = listener::byClass('autoconso');
-//log::add('autoconso', 'debug', print_r($listener, true));
-				
 
 	// Translate ID of equipments to human name
 	$this->setConfiguration('injection' , cmd::cmdToHumanReadable($this->getConfiguration('injection') ));
@@ -303,9 +298,15 @@ class autoconsoCmd extends cmd {
 	return false;
   }
 
+  public function refresh() {
+	if ($this->getType() == 'info') {
+		$this->getEqLogic()->checkAndUpdateCmd($this, $this->execute());
+	}
+  }
+	
   // Exécution d'une commande
   public function execute($_options = array()) {
-	//log::add('autoconso', 'debug', 'execute() for cmd '.$this->getName());
+//log::add('autoconso', 'debug', 'execute() for cmd '.$this->getName());
 	  
 	$eqLogic = $this->getEqLogic();
 	if ($this->getLogicalId() == 'optimize') {
@@ -314,7 +315,9 @@ class autoconsoCmd extends cmd {
 	}
 	
 	if ($this->getType() == 'info') {
-		log::add('autoconso', 'warning', 'execute() for cmd '.$this->getName().' should never happen as info commands are used for the equipment table');
+		log::add('autoconso', 'debug', '-SUPRISE- execute() for info cmd '.$this->getName());
+		// Return the estimated power value (in case it could be usefull)
+		return $this->getConfiguration('power');
 	}
   }
 
@@ -348,6 +351,10 @@ class autoconsoCmd extends cmd {
 		$this->setConfiguration('status' , cmd::cmdToHumanReadable($this->getConfiguration('status') ));
 		$this->setConfiguration('onCmd' , cmd::cmdToHumanReadable($this->getConfiguration('onCmd') ));
 		$this->setConfiguration('offCmd' , cmd::cmdToHumanReadable($this->getConfiguration('offCmd') ));
+		
+		// Store info values
+		$this->getEqLogic()->checkAndUpdateCmd($this, $this->getConfiguration('power'));
+
 	}
   }
 

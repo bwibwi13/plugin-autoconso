@@ -66,7 +66,7 @@ function addCmdToTable(_cmd) {
   } else { // This is an equipment for the equipment table
 	var tableTarget = '#table_equ'
 	_cmd.type = 'info'
-	_cmd.subType = 'string' // TODO: Subtype, even if not used, should be string but I can't find a way to force it by default :(
+	_cmd.subType = 'numeric'
 	
 	var tr = '<tr class="cmd" data-cmd_id="' + init(_cmd.id) + '">'
 	tr += '<td class="hidden">'

@@ -1,3 +1,9 @@
+---
+layout: default
+title: Autoconsommation
+lang: fr_FR
+pluginId: autoconso
+---
 # Plugin Autoconsommation
 
 Plugin **Jeedom** pour optimiser l'auto-consommation électrique (en cas d'installation photovoltaïque).
