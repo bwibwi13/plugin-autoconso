@@ -72,7 +72,6 @@ if (!is_object($this)) log::add('autoconso', 'error', 'optimize() problem: ('.pr
 	
 		// Build table of equipment to control (TODO retrieve from configuration)
 		$equList = $this->getCmd('info', null, null, true);
-//log::add('autoconso', 'debug', print_r($equList[0],true));
 		$orderedList = array();
 		foreach ($equList as $equCmd) {
 			array_push($orderedList, array($equCmd->getName(), $equCmd->getConfiguration('power'), $equCmd->getConfiguration('status'), $equCmd->getConfiguration('onCmd'), $equCmd->getConfiguration('offCmd')));
@@ -81,6 +80,10 @@ if (!is_object($this)) log::add('autoconso', 'error', 'optimize() problem: ('.pr
 
 		$currentPower = jeedom::evaluateExpression($this->getConfiguration('injection'));
 		$powerPV      = jeedom::evaluateExpression($this->getConfiguration('production'));
+		
+		$dateTo = date('Y-m-d H:i:s');
+		$durationPV = strtotime($dateTo) - strtotime(scenarioExpression::collectDate($this->getConfiguration('production')));
+//log::add('autoconso', 'debug', 'Collect duration of solar production : '.$durationPV.'s');
 
 		// Estimate consumption if everything is turned off
 		$estimatedPower = $currentPower;
@@ -94,6 +97,10 @@ if (!is_object($this)) log::add('autoconso', 'error', 'optimize() problem: ('.pr
 		
 		if ($powerPV) {
 			$body .= ' ('.$powerPV.'W of PV)';
+		} else if (3600 < $durationPV) {
+			// If powerPV was not collected for 1h, we are probably facing an issue
+			log::add('autoconso', 'warning', 'Solar production not collected for '.$durationPV.'s');
+			$powerPV = 10000;
 		}
 		$body .= '. ';
 
