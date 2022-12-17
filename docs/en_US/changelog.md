@@ -1,5 +1,7 @@
 # Changelog plugin Autoconsommation
 
-# July 2022
+# December 2022
+- Detect if solar production was not collected for a long time and compensate for it
 
+# July 2022
 - First version
