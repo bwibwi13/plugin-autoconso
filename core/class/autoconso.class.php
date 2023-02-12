@@ -79,12 +79,18 @@ if (!is_object($this)) log::add('autoconso', 'error', 'optimize() problem: ('.pr
 //log::add('autoconso', 'debug', print_r($orderedList,true));
 
 		$currentPower = jeedom::evaluateExpression($this->getConfiguration('injection'));
-		$powerPV      = jeedom::evaluateExpression($this->getConfiguration('production'));
+		if ($this->getConfiguration('production') === '') {
+			// Solar production value is not configured (which is OK becauseit is optional)
+			$powerPV    = 99999;
+			$durationPV = 99999;
+			log::add('autoconso', 'debug', 'Solar production not provided');
+		} else {
+			$powerPV  = jeedom::evaluateExpression($this->getConfiguration('production'));
+			$dateTo = date('Y-m-d H:i:s');
+			$durationPV = strtotime($dateTo) - strtotime(scenarioExpression::collectDate($this->getConfiguration('production')));
+			log::add('autoconso', 'debug', 'Solar production of '.$powerPV.'W with collect duration of '.$durationPV.'s');
+		}
 		
-		$dateTo = date('Y-m-d H:i:s');
-		$durationPV = strtotime($dateTo) - strtotime(scenarioExpression::collectDate($this->getConfiguration('production')));
-//log::add('autoconso', 'debug', 'Collect duration of solar production : '.$durationPV.'s');
-
 		// Estimate consumption if everything is turned off
 		$estimatedPower = $currentPower;
 		foreach ($orderedList as $electricItem) {
@@ -95,12 +101,12 @@ if (!is_object($this)) log::add('autoconso', 'error', 'optimize() problem: ('.pr
 		}
 		$body .= 'Injecting '.$currentPower.'W out of '.$estimatedPower.'W';
 		
-		if ($powerPV) {
+		if ($powerPV && $powerPV<99999) {
 			$body .= ' ('.$powerPV.'W of PV)';
-		} else if (3600 < $durationPV) {
+		} else if (3600<$durationPV && $powerPV<99999) {
 			// If powerPV was not collected for 1h, we are probably facing an issue
 			log::add('autoconso', 'warning', 'Solar production not collected for '.$durationPV.'s');
-			$powerPV = 10000;
+			$powerPV = 99999;
 		}
 		$body .= '. ';
 
