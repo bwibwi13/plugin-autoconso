@@ -40,6 +40,7 @@
 		"Injection nette": "Final injection",
 		"Total injection helper": "Equipment returning the total instant electricity injection of the house",
 		"Production solaire": "Solar production",
+		"Optionnel": "Optional",
 		"Solar production helper": "Equipment returning the instant solar electricity production",
 		"Marge de sécurité": "Security margin",
 		"security margin helper": "Security margin to apply on the total injection (Watt) Can be a number or a command from another equipment",
