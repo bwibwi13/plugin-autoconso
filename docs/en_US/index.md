@@ -8,11 +8,12 @@ pluginId: autoconso
 
 **Jeedom** plugin to optimize electrical auto-consumption (in case of solar power plan).
 
-The plugin will turn other equipment's ON or OFF depending on the measured electrical balance of the house.
+The plugin will turn other equipments ON or OFF depending on the measured electrical balance of the house.
 This plugin expects you to provide this information in real-time (typically based on a power meter).
 
 **Note**: This plugin considers positive power as what is injected back to the grid.
 (This allows to be consistent with a positive power from the solar inverter.)
+(If your meter provides a value with an inverted sign compared to this, you just need to add "-1*" in front of your command.)
 
 # Plugin configuration
 After downloading the plugin, you just need to activate it, there is no configuration at this level.
@@ -26,11 +27,13 @@ The *Specific parameters* allow to configure what is needed to run an instance o
 
 - **Final injection** : Equipment info with the total instant situation of electrical injection for the house (mandatory)
 - **Solar production** : Equipment info with the instant electrical production from the solar inverter (optional)
-- **Security margin** : Fixed value or info equipment to define a security margin of minimum injection to consider in the regulation
+- **Security margin** : Fixed value or info equipment to define a security margin of minimum injection to consider in the regulation (optional) * Allows to reduce the risk of electric consumption from the grid. This is useful when managing powerfull devices that we really only want to turn on when there is a lot of sun. (e.g. electric water heater used to pre-heat water when we generate too much power.) *
 - **Backup cron** : Cron expression to run the optimization algorithm at a regular pace (in case the triggers would not be sufficient)
 
 ## Commands tab
 The *Commands* tab holds only the default action that runs the optimization algorithm.
+Executing this command forces a recomputation of the algorithm as if the measure of final injection had changed or if the cron was fired.
+
 There is nothing to configure here.
 
 ## Equipment table tab

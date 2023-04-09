@@ -1,5 +1,8 @@
 # Changelog plugin Autoconsommation
 
+# Avril 2023
+- Amélioration de la doc (merci Rennais35000)
+
 # Janvier 2023
 - Correction d'un bug quand la production photovoltaïque n'est pas fournie (merci Axxel70)
 
