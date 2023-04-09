@@ -1,5 +1,8 @@
 # Changelog plugin Autoconsommation
 
+# April 2023
+- Documentation improvement (thanks Rennais35000)
+
 # January 2023
 - Fixing a bug when solar production is not provided (thanks to Axxel70)
 
