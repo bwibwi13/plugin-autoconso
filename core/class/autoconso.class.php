@@ -90,7 +90,7 @@ if (!is_object($this)) log::add('autoconso', 'error', 'optimize() problem: ('.pr
 			$dateTo = date('Y-m-d H:i:s');
 			$durationPV = strtotime($dateTo) - strtotime(scenarioExpression::collectDate($this->getConfiguration('production')));
 			log::add('autoconso', 'debug', 'Solar production of '.$powerPV.'W with collect duration of '.$durationPV.'s');
-			if ($durationPV > 3*60) { // powerPV not updated for 30min -> Using nutral values to avoid issues
+			if ($durationPV > 30*60) { // powerPV not updated for 30min -> Using nutral values to avoid issues
 				$powerPV    = 99999;
 				$durationPV = 99999;
 				log::add('autoconso', 'debug', 'Solar production too old, ignoring it');
