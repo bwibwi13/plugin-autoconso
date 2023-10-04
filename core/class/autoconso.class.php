@@ -70,7 +70,7 @@ if (!is_object($this)) log::add('autoconso', 'error', 'optimize() problem: ('.pr
 
 		$body = $this->getHumanName().' ';
 	
-		// Build table of equipment to control (TODO retrieve from configuration)
+		// Build table of equipment to control
 		$equList = $this->getCmd('info', null, null, true);
 		$orderedList = array();
 		foreach ($equList as $equCmd) {
@@ -80,15 +80,21 @@ if (!is_object($this)) log::add('autoconso', 'error', 'optimize() problem: ('.pr
 
 		$currentPower = jeedom::evaluateExpression($this->getConfiguration('injection'));
 		if ($this->getConfiguration('production') === '') {
-			// Solar production value is not configured (which is OK becauseit is optional)
+			// Solar production value is not configured (which is OK because it is optional)
 			$powerPV    = 99999;
 			$durationPV = 99999;
 			log::add('autoconso', 'debug', 'Solar production not provided');
 		} else {
 			$powerPV  = jeedom::evaluateExpression($this->getConfiguration('production'));
+
 			$dateTo = date('Y-m-d H:i:s');
 			$durationPV = strtotime($dateTo) - strtotime(scenarioExpression::collectDate($this->getConfiguration('production')));
 			log::add('autoconso', 'debug', 'Solar production of '.$powerPV.'W with collect duration of '.$durationPV.'s');
+			if ($durationPV > 3*60) { // powerPV not updated for 30min -> Using nutral values to avoid issues
+				$powerPV    = 99999;
+				$durationPV = 99999;
+				log::add('autoconso', 'debug', 'Solar production too old, ignoring it');
+			}
 		}
 		
 		// Estimate consumption if everything is turned off
